@@ -17,13 +17,13 @@ def barcode_file(manifestfile):
 
 def processbins(filechromdict, chromlist, start, segments):
     """ process chromosome dict and chromlist to produce segments 
-        that are binned and averaged over bin
+        that are binned and averaged over bin, returns chromosome,
+        bin,  and mean of bin as list of lists
     """
     chrombinaverage = []
     for key, value in filechromdict.iteritems():
         startchrom = []
         segmentchrom = []
-        templist = []
         for i, row in enumerate(chromlist):
             if key == row:
                 startchrom.append(start[i])
@@ -50,7 +50,8 @@ def processbins(filechromdict, chromlist, start, segments):
     return chrombinaverage
     
 def process_file(cnafile, barcode, filechromdict):
-    """ take input cnafile, process it, and return patient, cancer, processed
+    """ take input cnafile, returns patient, cancer, processed
+        as list of lists
     """
     samplename = cnafile[0][0]
     tcgacode = barcode[samplename]
@@ -66,23 +67,18 @@ def process_file(cnafile, barcode, filechromdict):
     return process_matrix            
 
 
-masterlist = glob.glob('./*.txt')
-#cancername = str(sys.argv[1])
-#workingdir = str(sys.argv[2])
-
-cancername = 'ACC'
-#workingdir = '/Users/iManda/Desktop/final_project/ACC_test'
+cancername = str(sys.argv[1])
+workingdir = str(sys.argv[2])
+masterlist = glob.glob('{0}/{1}/CNV_SNP_Array/BI__Genome_Wide_SNP_6/Level_3/*.txt'.format(workingdir, cancername))
 officialchrom = '/Users/iManda/Desktop/final_project/chrom_bps.txt'
+
 
 with open(officialchrom, 'r') as f:
     filechrom = [item.split('\t') for item in f.read().splitlines()]
 
 filechromdict = dict(zip([row[0] for row in filechrom], [float(row[1]) for row in filechrom]))
 
-#with open('{0}/{1}/file_manifest.txt'.format(workingdir, cancername), 'r') as f:
-    #manifestfile = [item.split('\t') for item in f.read().splitlines()]
-
-with open('/Users/iManda/Desktop/final_project/ACC_test/file_manifest.txt') as f:
+with open('{0}/{1}/file_manifest.txt'.format(workingdir, cancername), 'r') as f:
     manifestfile = [item.split('\t') for item in f.read().splitlines()]
 
 del manifestfile[0]
@@ -92,27 +88,19 @@ del manifestfile[0]
 barcode = barcode_file(manifestfile)
 
 
-#fix so that hg18 vs hg19 are averaged
-
 matrix = []
 for file in masterlist:
-    temp = file.split('.')[2]
-    if temp[0:5] != 'nocnv':
+    temp = file.split('.')[1]
+    if temp[0:5] != 'nocnv' and temp[-4:] == 'hg19':
         with open(file, 'r') as f:
             cnafile = [item.split('\t') for item in f.read().splitlines()]
         del cnafile[0]
-        #print file
-        if file[-12:] == 'hg18.seg.txt':
-            processed_file = process_file(cnafile, barcode, filechromdict)
-            reference = ['hg18'] * len(processed_file)
-            for i in range(len(processed_file)):
-                matrix.append(processed_file[i] + [reference[i]])
-        if file[-12:] == 'hg19.seg.txt':
-            processed_file = process_file(cnafile, barcode, filechromdict)
-            reference = ['hg19'] * len(processed_file)
-            for i in range(len(processed_file)):
-                matrix.append(processed_file[i] + [reference[i]])
+        processed= process_file(cnafile, barcode, filechromdict)
+        for i in range(len(processed)):
+            matrix.append(processed[i])
 
-
+with open('{0}/{1}_cnabinned_matrix.txt'.format(workingdir, cancername), 'w') as f:
+    for row in matrix:
+        f.write('\t'.join(row) + '\n')
 
 
