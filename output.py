@@ -137,7 +137,7 @@ plt.ylabel('cancer_mean')
 plt.title('Top Cancer Correlation')
 #plt.legend(loc = 'lower right', scatterpoints = 0)
 #plt.text(xytext='axes fraction','R^2= %.2f'%corr, verticalalignment='bottom', horizontalalignment='right')
-plt.savefig('myfig')
+plt.savefig('top_cancer')
 
 spdf = pd.read_sql("SELECT * FROM {0}_copy_number;".format(top_cancer[0]),conn)
 uniq_patient = spdf['PatientID'].unique()
@@ -147,3 +147,14 @@ top_patient, top_patmeans = patient_rank(spdf, uniq_patient, new_inputmean)
 
 print "top cancer: %s with correlation of %.2f" %(top_cancer[0], top_cancer[1])
 print "top patient: %s with correlation of %.2f" %(top_patient[0], top_patient[1])
+
+plt.clf()
+plt.plot(top_patmeans['input_mean'], top_patmeans['cancer_mean'], '.')
+plt.plot(top_patmeans['input_mean'], m*top_patmeans['input_mean'] + b, '-')
+plt.xlabel('input_mean')
+plt.ylabel('cancer_mean')
+plt.title('Top Cancer Correlation')
+#plt.legend(loc = 'lower right', scatterpoints = 0)
+#plt.text(xytext='axes fraction','R^2= %.2f'%corr, verticalalignment='bottom', horizontalalignment='right')
+plt.savefig('top_patient')
+
