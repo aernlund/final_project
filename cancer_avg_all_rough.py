@@ -1,5 +1,8 @@
 #!/usr/bin/python
 """This script processes all cancers to give average bin copy number"""
+#cancername = "ACC"
+#workingdir = "/Users/iManda/Desktop/final_project"
+
 
 import sys
 import glob
@@ -9,7 +12,7 @@ def barcode_file(manifestfile):
     """ (manifest_file) -> dictionary of filenames: barcodes, names of files (excluding .txt)
     """
     cnafilename = [item[-1].split('.')[0] for item in manifestfile]
-    tcgabarcode = ['-'.join(item[-2].split('-')[0:3]) for item in manifestfile]
+    tcgabarcode = ['-'.join(item[-2].split('-')[0:4]) for item in manifestfile]
     barcodename = dict(zip(cnafilename, tcgabarcode))
     return barcodename
     
@@ -44,7 +47,7 @@ def processbins(filechromdict, chromlist, start, segments):
                 if temp:
                     means.append([str(bins[i])] + [str(np.array(temp).mean())])
                 else:
-                    means.append([str(bins[i])] + [str(np.nan)])
+                    means.append([str(bins[i])] + ['\N'])
             for i, item in enumerate(keylist):
                 chrombinaverage.append([item] + means[i])        
     return chrombinaverage
@@ -102,5 +105,4 @@ for file in masterlist:
 with open('{0}/{1}_cnabinned_matrix.txt'.format(workingdir, cancername), 'w') as f:
     for row in matrix:
         f.write('\t'.join(row) + '\n')
-
 
