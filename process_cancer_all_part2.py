@@ -16,7 +16,6 @@ def processbins(filechromdict, chromlist, start, segments):
     for key, value in filechromdict.iteritems():
         startchrom = []
         segmentchrom = []
-        templist = []
         for i, row in enumerate(chromlist):
             if key == row:
                 startchrom.append(start[i])
@@ -37,7 +36,7 @@ def processbins(filechromdict, chromlist, start, segments):
                 if temp:
                     means.append([str(bins[i])] + [str(np.array(temp).mean())])
                 else:
-                    means.append([str(bins[i])] + [str(np.nan)])
+                    means.append([str(bins[i])] + ['\N'])
             for i, item in enumerate(keylist):
                 chrombinaverage.append([item] + means[i])        
     return chrombinaverage
@@ -58,8 +57,8 @@ def process_inputfile(inputfile, filechromdict):
     
     
     
-#workingdir = str(sys.argv[1])
-workingdir = "/Users/iManda/Desktop/final_project/cancer_files"
+workingdir = str(sys.argv[1])
+#workingdir = "/Users/iManda/Desktop/final_project/cancer_files"
 masterlist = glob.glob('{0}/*.txt'.format(workingdir))
 officialchrom = '/Users/iManda/Desktop/final_project/chrom_bps.txt'
     
@@ -83,8 +82,6 @@ with open('{0}/all_cancer.txt'.format(workingdir), 'w') as f:
     
 
 
-#%prun barcode_file(manifestfile)
-#%prun processfile(copynumfile)
 
 
 
