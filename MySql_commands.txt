@@ -1,0 +1,43 @@
+#to login to database 
+ssh awe220@hpcf.med.nyu.edu
+
+#to move files from my mac
+scp myfile awe220@hpcf.med.nyu.edu:
+#to move files to my mac
+scp awe220@hpcf.med.nyu.edu:myfig.png .
+
+#to access mysql
+awe220@hpcf.med.nyu.edu 
+mysql -u awe220 -p
+password: coco2828
+
+#mysql commands - cancer_copy_number is the database
+SHOW DATABASES;
+CREATE DATABASE cancer_copy_number;
+use cancer_copy_number
+select database();
+
+CREATE TABLE ACC_copy_number (PatientID VARCHAR(250), cancer VARCHAR(15), chromosome VARCHAR(250), bin INT, mean FLOAT(5, 4));
+CREATE TABLE GBM_copy_number (PatientID VARCHAR(250), cancer VARCHAR(15), chromosome VARCHAR(250), bin INT, mean FLOAT(5, 4));
+#CREATE TABLE BLCA_copy_number (PatientID VARCHAR(250), cancer VARCHAR(15), chromosome VARCHAR(250), bin INT, mean FLOAT(5, 4));
+
+CREATE TABLE all_cancer_copy_number (cancer VARCHAR(15), chromosome VARCHAR(250), bin INT, mean FLOAT(5, 4));
+
+SHOW TABLES;
+DESCRIBE ACC_copy_number;
+
+#to remove table
+drop table ACC_copy_number;
+
+#to empty table
+DELETE FROM ACC_copy_number;
+
+#no header in file
+LOAD DATA LOCAL INFILE '/home/awe220/ACC_cnabinned_matrix.txt' INTO TABLE ACC_copy_number;
+SELECT * FROM ACC_copy_number LIMIT 0,10;
+
+LOAD DATA LOCAL INFILE '/home/awe220/all_cancer.txt' INTO TABLE all_cancer_copy_number;
+SELECT * FROM all_cancer_copy_number LIMIT 0,10;
+
+LOAD DATA LOCAL INFILE '/home/awe220/GBM_cnabinned_matrix.txt' INTO TABLE GBM_copy_number;
+
