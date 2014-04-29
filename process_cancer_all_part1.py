@@ -1,18 +1,18 @@
 #!/usr/bin/python
-#workingdir = "/Users/iManda/Desktop/final_project"
 #cancername = "ACC"
+#workingdir = "/Users/iManda/Desktop/final_project"
 
 
 import sys
 import glob
 
-def file_info(copynumfile):
+def file_info(cnafile):
     """(extract columns from hg18 files) -> list of lists with all file info
     """
     format = []
-    chr = [item[1] for item in copynumfile]
-    start = [item[2] for item in copynumfile]
-    mean = [item[-1] for item in copynumfile]
+    chr = [item[1] for item in cnafile]
+    start = [item[2] for item in cnafile]
+    mean = [item[-1] for item in cnafile]
     cancer = [cancername] * len(mean)
     for i in range(len(mean)):
         format.append([chr[i]] + [start[i]] + [mean[i]] + [cancer[i]])
@@ -38,3 +38,4 @@ for file in masterlist:
 with open('{0}/{1}_cna_matrix.txt'.format(workingdir, cancername), 'w') as f:
     for row in matrix:
         f.write('\t'.join(row) + '\n')
+
